@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_photos"
+        android:icon="@drawable/photos_icon"
+        android:title="@string/title_photos" />
+
+    <item
+        android:id="@+id/navigation_login"
+        android:icon="@drawable/login_icon"
+        android:title="@string/title_login" />
+</menu>

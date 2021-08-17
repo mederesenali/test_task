@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">TestTask</string>
+    <string name="title_photos">photos</string>
+    <string name="title_login">login</string>
+    <string name="enter">Войти</string>
+    <string name="edit_password">Пароль</string>
+    <string name="edit_login">Логин</string>
+</resources>
