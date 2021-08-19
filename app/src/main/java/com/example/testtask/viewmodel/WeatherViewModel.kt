@@ -5,12 +5,13 @@ import androidx.lifecycle.*
 import com.example.testtask.data.api.PhotosApi
 import com.example.testtask.data.api.WeatherApi
 import com.example.testtask.data.model.WeatherResponse
+import com.example.testtask.di.WeatherAPI
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WeatherViewModel @Inject constructor(private val  weatherApi: WeatherApi)
+class WeatherViewModel @Inject constructor(@WeatherAPI private val  weatherApi: WeatherApi)
 :ViewModel(){
     val listData=MutableLiveData<WeatherResponse>()
 
@@ -24,7 +25,7 @@ class WeatherViewModel @Inject constructor(private val  weatherApi: WeatherApi)
     }
 
     private fun getWeather() = viewModelScope.launch {
-        weatherApi.getWeatherData(498817,"fc8581245a9d7e0ef2f531b01a688f9e").let { response ->
+        weatherApi.getWeatherData(498817,"fc8581245a9d7e0ef2f531b01a688f9e","ru","metric").let { response ->
 
             if (response.isSuccessful) {
                 listData.postValue(response.body())

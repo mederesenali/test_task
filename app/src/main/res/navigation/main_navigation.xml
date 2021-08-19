@@ -13,6 +13,6 @@
 
     <fragment
         android:id="@+id/navigation_login"
-        android:name="com.example.testtask.ui.login.LoginFramgment"
+        android:name="com.example.testtask.ui.login.LoginFragment"
         tools:layout="@layout/login_fragment" />
 </navigation>

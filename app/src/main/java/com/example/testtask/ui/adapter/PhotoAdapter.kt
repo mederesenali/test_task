@@ -9,10 +9,10 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.bumptech.glide.Glide
+import com.example.testtask.R
 import com.example.testtask.data.model.Photo
 import com.example.testtask.databinding.PhotoLayoutBinding
-import com.squareup.picasso.Picasso
-
 
 class PhotoAdapter : PagingDataAdapter<Photo, PhotoAdapter.ImageViewHolder>(diffCallback) {
 
@@ -22,7 +22,7 @@ class PhotoAdapter : PagingDataAdapter<Photo, PhotoAdapter.ImageViewHolder>(diff
     companion object {
         val diffCallback = object : DiffUtil.ItemCallback<Photo>() {
             override fun areItemsTheSame(oldItem: Photo, newItem: Photo): Boolean {
-                return TextUtils.equals(newItem.id, oldItem.id)
+                return newItem.id == oldItem.id
             }
 
             override fun areContentsTheSame(oldItem: Photo, newItem: Photo): Boolean {
@@ -49,15 +49,12 @@ class PhotoAdapter : PagingDataAdapter<Photo, PhotoAdapter.ImageViewHolder>(diff
             holder.itemView.apply {
                 tvAuthor.text = "${currChar?.author}"
 
-
-
-                val imageLink = currChar?.downloadUrl
-                imageView.load(imageLink) {
-                    crossfade(true)
-                    crossfade(1000)
-                }
-
-               // Picasso.with(root.context).load(imageLink).into(imageView)
+                val imageLink = currChar?.download_url
+                Glide.with(imageView)
+                    .load(imageLink)
+                    .centerCrop()
+                    .placeholder(R.drawable.logo)
+                    .into(imageView)
             }
         }
 

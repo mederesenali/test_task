@@ -3,7 +3,7 @@ package com.example.testtask.di
 import com.example.testtask.data.api.PhotosApi
 import com.example.testtask.data.api.WeatherApi
 import com.example.testtask.utils.Constants
-import com.google.gson.Gson
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,7 +12,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Named
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 
@@ -20,29 +20,60 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    @PicturesBaseUrl
     @Provides
-    fun provideBaseUrl() = Constants.WEATHER_URL
+    @Singleton
+    fun providePicturesBaseUrl() = Constants.PICTURES_BASE_URL
+
+    @OpenWeatherBaseUrl
+    @Provides
+    @Singleton
+    fun provideOpenWeatherBaseUrl() = Constants.OPEN_WEATHER_BASE_URL
 
     @Provides
-    fun provideLoggingInterceptor()=HttpLoggingInterceptor().
-        apply { level = HttpLoggingInterceptor.Level.BODY }
+    fun provideLoggingInterceptor() =
+        HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
 
-
-    @Provides
-    //@Singleton
-    fun provideOkHttpClient(interceptor: HttpLoggingInterceptor) =
-        OkHttpClient.Builder().addInterceptor(interceptor).build();
 
     @Provides
     @Singleton
-    fun provideRetrofit(WEATHER_URL: String, client: OkHttpClient): WeatherApi =
+    fun provideOkHttpClient(interceptor: HttpLoggingInterceptor) =
+        OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .connectTimeout(Constants.OkHttpClient.CONNECT_TIMEOUT, TimeUnit.SECONDS)
+            .writeTimeout(Constants.OkHttpClient.WRITE_TIMEOUT, TimeUnit.SECONDS)
+            .readTimeout(Constants.OkHttpClient.READ_TIMEOUT, TimeUnit.SECONDS)
+            .build()
+
+    @WeatherAPI
+    @Provides
+    @Singleton
+    fun provideWeatherRetrofit(
+        @OpenWeatherBaseUrl OPEN_WEATHER_BASE_URL: String,
+        client: OkHttpClient
+    ): WeatherApi =
         Retrofit.Builder()
             .client(client)
-            .baseUrl(WEATHER_URL)
+            .baseUrl(OPEN_WEATHER_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
             .create(WeatherApi::class.java)
 
+    @PhotoAPI
+    @Provides
+    @Singleton
+    fun providePicturesRetrofit(
+        @PicturesBaseUrl PICTURES_BASE_URL: String,
+        client: OkHttpClient
+    ): PhotosApi =
+        Retrofit.Builder()
+            .client(client)
+            .baseUrl(PICTURES_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+         //   .addCallAdapterFactory(CoroutineCallAdapterFactory())
+            .build()
+            .create(PhotosApi::class.java)
 
 
 }
